@@ -1,0 +1,82 @@
+﻿@page "/vehicle"
+@using Microsoft.Fast.Components.FluentUI
+@using DavisMotorVehicles.Data.DataTransferObjects;
+@inject HttpClient Http
+<PageTitle>Vehicles</PageTitle>
+@*
+<FluentCard>
+	<h2>Hello World!</h2>
+	<FluentButton Appearance="@Appearance.Accent">Click Me</FluentButton>
+</FluentCard>
+*@
+<h3>VehicleEdit</h3>
+
+@if (vehicles == null)
+{
+	<p>Loading</p>
+}
+else
+{
+	<table>
+
+		<tbody>
+			@foreach (var vehicle in vehicles)
+			{
+				<tr style="margin-bottom:100px">
+					<td>@vehicle.Vehicle.VinNumber</td>
+					<td>@vehicle.Vehicle.FuelLevel</td>
+					<td>@vehicle.Vehicle.VehicleType.Name</td>
+					<div style="width:300px; margin-bottom:20px" class="">
+
+
+						@*<FluentSlider Orientation="Orientation.Horizontal" Min="0" Max="100" Step="10"  @onchange="()=> DragEnd(vehicle)"  @bind-Value="@vehicle.FuelLevel"> *@
+						@*pass the value from the on change event to the function DragEnd*@
+
+						<FluentSlider Orientation="Orientation.Horizontal" Min="0" Max="100" Step="10" @onchange="(i)=> DragEnd(i, vehicle)" @bind-Value="vehicle.Vehicle.FuelLevel">
+							@*<FluentSlider Orientation="Orientation.Horizontal" Min="0" Max="100" Step="10" @bind="veh" Value="vehicle.FuelLevel" @onchange="()=> DragEnd(vehicle)" ValueChanged="@DragEnd(vehicle)">*@
+							<FluentSliderLabel Position="0">0&#8451;</FluentSliderLabel>
+							<FluentSliderLabel Position="10">10&#8451;</FluentSliderLabel>
+							<FluentSliderLabel Position="90">90&#8451;</FluentSliderLabel>
+							<FluentSliderLabel Position="100">100&#8451;</FluentSliderLabel>
+						</FluentSlider>
+						@*<FluentButton @onclick="()=> Submit(vehicle)">Submit</FluentButton>*@
+					</div>
+				</tr>
+
+			}
+		</tbody>
+	</table>
+}
+
+
+@code {
+	private VehicleDto[]? vehicles;
+
+	protected override async Task OnInitializedAsync()
+	{
+
+		vehicles = await Http.GetFromJsonAsync<VehicleDto[]>("Vehicle");
+	}
+	protected async Task DragEnd(Microsoft.AspNetCore.Components.ChangeEventArgs i, VehicleDto vehicle)
+	{
+		Console.WriteLine(i.Value);
+		vehicle.Vehicle.FuelLevel = int.Parse(i.Value.ToString());
+		Console.WriteLine(vehicle.Vehicle.FuelLevel);
+		Console.WriteLine("youoloo");
+		//vehicle = vehicles.Where(i => i.Id == vehicle.Id).Single();
+		//vehicle.FuelLevel = int.Parse(parameter.Value.ToString());
+		await Http.PostAsJsonAsync("Vehicle", vehicle);
+	}
+
+	//protected void Submit(Vehicle vehicle)
+	//{
+	//	//var vehicle = vehicles.Where(i => i.Id == vehicleId).Single();
+	//	//vehicle.FuelLevel = int.Parse(parameter.Value.ToString());
+	//	foreach (var vehicle1 in vehicles)
+	//	{
+	//		vehicle.FuelLevel = 10;
+	//	}
+	//	//await Http.PostAsJsonAsync("Vehicle", vehicle);
+	//}
+
+}
