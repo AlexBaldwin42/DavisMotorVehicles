@@ -10,8 +10,8 @@ namespace DavisMotorVehicles.Data
 	{
 		public int Id { get; set; }
 		public int VehicleId { get; set; }
-		public Vehicle Vehicle { get; set; }
-		public int TireId { get; set; }
-		public TireStatus TireStatus { get; set; }
+		public virtual Vehicle Vehicle { get; set; }
+		public int TireStatusId { get; set; }
+		public virtual TireStatus TireStatus { get; set; }
 	}
 }

@@ -33,8 +33,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Data\DavisMotorVehicles.Data.csproj" />
     <ProjectReference Include="..\Client\DavisMotorVehicles.Client.csproj" />
+    <ProjectReference Include="..\Data\DavisMotorVehicles.Data.csproj" />
     <ProjectReference Include="..\Shared\DavisMotorVehicles.Shared.csproj" />
   </ItemGroup>
 

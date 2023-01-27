@@ -27,26 +27,23 @@ namespace DavisMotorVehicles.Server.Controllers
 			foreach (var vehicle in vehicles)
 			{
 				VehicleDto vehicleDto = new VehicleDto();
-				vehicleDto.Vehicle = vehicle;
-				vehicleDto.Tires = vehicle.Tires;
-				vehicleDto.TireStatuses = vehicle.Tires.Select(i => i.TireStatus).ToList();
-				vehicleDto.VehicleTypes = vehicle.VehicleType;
+				vehicleDto.VehicleId = vehicle.Id;
+				vehicleDto.VinNumber = vehicle.VinNumber;
+				vehicleDto.Make = vehicle.Make;
+				vehicleDto.Model = vehicle.Model;
+				vehicleDto.Year = vehicle.Year;
+				vehicleDto.FuelLevel = vehicle.FuelLevel;
+				vehicleDto.VehicleTypeName = vehicle.VehicleType.Name;
+				vehicleDto.VehicleTypeName = vehicle.VehicleType.Name;
+				vehicleDto.Tires = vehicle.Tires.Select(i => new TireVm()
+				{
+					TireId = i.Id,
+					TireStatusId = i.TireStatus.Id,
+					TireStatus = i.TireStatus.Status
+				}).ToList();
 				vehicleDtos.Add(vehicleDto);
 			}
 
-			if (vehicles.Count == 0)
-			{
-				var vehicleType = db.VehicleTypes.First();
-
-				Vehicle newVehicle1 = new Vehicle() { FuelLevel = 50, VinNumber = "djfwieurj8444", VehicleType = vehicleType };
-				Vehicle newVehicle2 = new Vehicle() { FuelLevel = 70, VinNumber = "877kdjfiiwuwuee", VehicleType = vehicleType };
-
-				db.Add(newVehicle1);
-				db.Add(newVehicle2);
-				db.SaveChanges();
-				vehicles = db.Vehicles.Include(i => i.VehicleType).ToList();
-
-			}
 			return vehicleDtos;
 
 		}
@@ -64,7 +61,7 @@ namespace DavisMotorVehicles.Server.Controllers
 		public void AddOrUpdate(VehicleDto vehicle)
 		{
 			using var db = new VehicleDatabaseContext();
-			if (db.Vehicles.Where(i => i.Id == vehicle.Vehicle.Id).Count() > 0)
+			if (db.Vehicles.Where(i => i.Id == vehicle.VehicleId).Count() > 0)
 			{
 				db.Update(vehicle);
 			}
@@ -77,7 +74,7 @@ namespace DavisMotorVehicles.Server.Controllers
 
 				foreach (var tire in vehicle.Tires)
 				{
-					if (db.Tires.Where(i => i.Id == tire.Id).Count() > 0)
+					if (db.Tires.Where(i => i.Id == tire.TireId).Count() > 0)
 					{
 						db.Update(tire);
 					}
