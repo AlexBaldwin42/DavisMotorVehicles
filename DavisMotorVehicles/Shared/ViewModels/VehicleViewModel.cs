@@ -4,14 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DavisMotorVehicles.Data.DataTransferObjects
+namespace DavisMotorVehicles.Shared.ViewModels
 {
 	public class VehicleViewModel
 	{
-		//public Vehicle Vehicle { get; set; }
-		//public List<Tire>? Tires { get; set; }
-		//public List<TireStatus>? TireStatuses { get; set; }
-		//public VehicleType VehicleTypes { get; set; }
 		public int VehicleId { get; set; }
 		public string Vin { get; set; }
 		public string Make { get; set; }

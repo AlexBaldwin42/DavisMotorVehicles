@@ -1,10 +1,10 @@
 ﻿@page "/vehicles"
 @using Microsoft.Fast.Components.FluentUI
-@using DavisMotorVehicles.Data.DataTransferObjects;
+@using DavisMotorVehicles.Shared.ViewModels;
 @using System.Linq;
 @inject HttpClient Http
 <PageTitle>Vehicles</PageTitle>
-<h3>VehicleEdit</h3>
+<h3>Vehicles</h3>
 
 @if (vehicles == null)
 {

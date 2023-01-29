@@ -2,7 +2,7 @@
 using DavisMotorVehicles.Data;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
-using DavisMotorVehicles.Data.DataTransferObjects;
+using DavisMotorVehicles.Shared.ViewModels;
 
 namespace DavisMotorVehicles.Server.Controllers
 {

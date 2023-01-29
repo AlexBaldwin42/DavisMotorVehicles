@@ -15,7 +15,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Data\DavisMotorVehicles.Data.csproj" />
     <ProjectReference Include="..\Shared\DavisMotorVehicles.Shared.csproj" />
   </ItemGroup>
 
