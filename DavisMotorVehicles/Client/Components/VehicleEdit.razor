@@ -143,11 +143,16 @@
 	}
 	public void AddTire()
 	{
+		if(Vehicle.Tires == null)
+		{
+			Vehicle.Tires = new();		
+		}
 		Vehicle.Tires.Add(new TireVm());
 	}
-	public void DeleteTire(TireVm tire)
+	public async void DeleteTire(TireVm tire)
 	{
 		Vehicle.Tires.Remove(tire);
+		var response = await Http.DeleteAsync($"tire/{tire.TireId}");
 	}
 	public async Task Save()
 	{

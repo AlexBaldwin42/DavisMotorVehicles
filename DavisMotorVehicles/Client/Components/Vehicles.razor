@@ -64,7 +64,10 @@ else
 						}
 
 					</td>
-					<td><VehicleEdit @bind-Vehicle="vehicles[localVehicleIndex]"></VehicleEdit></td>
+					<td>
+						<VehicleEdit @bind-Vehicle="vehicles[localVehicleIndex]"></VehicleEdit>
+						<BSButton Color="BlazorStrap.BSColor.Danger" @onclick="@(()=> DeleteVehicle(vehicles[localVehicleIndex]))">Delete</BSButton>
+					</td>
 				</tr>
 
 			}
@@ -101,6 +104,15 @@ else
 			vehicles = new VehicleViewModel[1] { newVehicle };
 
 		}
+	}
+
+	private async void DeleteVehicle(VehicleViewModel vehicleToDelete)
+	{
+		var newVehiclesList = vehicles.ToList();
+		newVehiclesList.Remove(vehicleToDelete);
+		vehicles = newVehiclesList.ToArray();
+		//var response = await Http.DeleteAsync("Vehicle", vehicleToDelete.VehicleId);
+		var response = await Http.DeleteAsync($"Vehicle/{vehicleToDelete.VehicleId}");
 	}
 
 }

@@ -7,7 +7,7 @@
 namespace DavisMotorVehicles.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class initialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -44,6 +44,7 @@ namespace DavisMotorVehicles.Data.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
+                    IsActive = table.Column<bool>(type: "INTEGER", nullable: false),
                     VinNumber = table.Column<string>(type: "TEXT", nullable: false),
                     Make = table.Column<string>(type: "TEXT", nullable: false),
                     Model = table.Column<string>(type: "TEXT", nullable: false),
@@ -69,6 +70,7 @@ namespace DavisMotorVehicles.Data.Migrations
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     VehicleId = table.Column<int>(type: "INTEGER", nullable: false),
+                    IsActive = table.Column<bool>(type: "INTEGER", nullable: false),
                     TireStatusId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
@@ -112,40 +114,40 @@ namespace DavisMotorVehicles.Data.Migrations
 
             migrationBuilder.InsertData(
                 table: "Vehicles",
-                columns: new[] { "Id", "FuelLevel", "Make", "Model", "VehicleTypeId", "VinNumber", "Year" },
+                columns: new[] { "Id", "FuelLevel", "IsActive", "Make", "Model", "VehicleTypeId", "VinNumber", "Year" },
                 values: new object[,]
                 {
-                    { 1, 40, "Dodge", "Avenger", 1, "1C3CDZBG8DN504146", 2013 },
-                    { 2, 50, "Honda", "CRV", 1, "5J6RM4850CL703159", 2017 },
-                    { 3, 60, "Acura", "Integra", 1, "JH4KA3151LC012001", 2018 },
-                    { 4, 70, "Dodge", "Ram1500", 2, "3B7KF23Z42M211215", 2011 },
-                    { 5, 80, "Tige", "WakeMaster", 4, "848DKDIEKDL888DKD", 2003 },
-                    { 6, 90, "Honda", "Shadow", 3, "KDEID3366DKDKDKIF", 2022 }
+                    { 1, 40, true, "Dodge", "Avenger", 1, "1C3CDZBG8DN504146", 2013 },
+                    { 2, 50, true, "Honda", "CRV", 1, "5J6RM4850CL703159", 2017 },
+                    { 3, 60, true, "Acura", "Integra", 1, "JH4KA3151LC012001", 2018 },
+                    { 4, 70, true, "Dodge", "Ram1500", 2, "3B7KF23Z42M211215", 2011 },
+                    { 5, 80, true, "Tige", "WakeMaster", 4, "848DKDIEKDL888DKD", 2003 },
+                    { 6, 90, true, "Honda", "Shadow", 3, "KDEID3366DKDKDKIF", 2022 }
                 });
 
             migrationBuilder.InsertData(
                 table: "Tires",
-                columns: new[] { "Id", "TireStatusId", "VehicleId" },
+                columns: new[] { "Id", "IsActive", "TireStatusId", "VehicleId" },
                 values: new object[,]
                 {
-                    { 1, 3, 1 },
-                    { 2, 3, 1 },
-                    { 3, 3, 1 },
-                    { 4, 3, 1 },
-                    { 5, 4, 2 },
-                    { 6, 4, 2 },
-                    { 7, 4, 2 },
-                    { 8, 4, 2 },
-                    { 9, 1, 3 },
-                    { 10, 1, 3 },
-                    { 11, 1, 3 },
-                    { 12, 1, 3 },
-                    { 13, 4, 4 },
-                    { 14, 4, 4 },
-                    { 15, 4, 4 },
-                    { 16, 4, 4 },
-                    { 17, 4, 6 },
-                    { 18, 4, 6 }
+                    { 1, true, 3, 1 },
+                    { 2, true, 3, 1 },
+                    { 3, true, 3, 1 },
+                    { 4, true, 3, 1 },
+                    { 5, true, 4, 2 },
+                    { 6, true, 4, 2 },
+                    { 7, true, 4, 2 },
+                    { 8, true, 4, 2 },
+                    { 9, true, 1, 3 },
+                    { 10, true, 1, 3 },
+                    { 11, true, 1, 3 },
+                    { 12, true, 1, 3 },
+                    { 13, true, 4, 4 },
+                    { 14, true, 4, 4 },
+                    { 15, true, 4, 4 },
+                    { 16, true, 4, 4 },
+                    { 17, true, 4, 6 },
+                    { 18, true, 4, 6 }
                 });
 
             migrationBuilder.CreateIndex(

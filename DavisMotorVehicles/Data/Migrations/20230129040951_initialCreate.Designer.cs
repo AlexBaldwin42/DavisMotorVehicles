@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DavisMotorVehicles.Data.Migrations
 {
     [DbContext(typeof(VehicleDatabaseContext))]
-    [Migration("20230127180623_Initial")]
-    partial class Initial
+    [Migration("20230129040951_initialCreate")]
+    partial class initialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -23,6 +23,9 @@ namespace DavisMotorVehicles.Data.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("IsActive")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("TireStatusId")
@@ -43,108 +46,126 @@ namespace DavisMotorVehicles.Data.Migrations
                         new
                         {
                             Id = 1,
+                            IsActive = true,
                             TireStatusId = 3,
                             VehicleId = 1
                         },
                         new
                         {
                             Id = 2,
+                            IsActive = true,
                             TireStatusId = 3,
                             VehicleId = 1
                         },
                         new
                         {
                             Id = 3,
+                            IsActive = true,
                             TireStatusId = 3,
                             VehicleId = 1
                         },
                         new
                         {
                             Id = 4,
+                            IsActive = true,
                             TireStatusId = 3,
                             VehicleId = 1
                         },
                         new
                         {
                             Id = 5,
+                            IsActive = true,
                             TireStatusId = 4,
                             VehicleId = 2
                         },
                         new
                         {
                             Id = 6,
+                            IsActive = true,
                             TireStatusId = 4,
                             VehicleId = 2
                         },
                         new
                         {
                             Id = 7,
+                            IsActive = true,
                             TireStatusId = 4,
                             VehicleId = 2
                         },
                         new
                         {
                             Id = 8,
+                            IsActive = true,
                             TireStatusId = 4,
                             VehicleId = 2
                         },
                         new
                         {
                             Id = 9,
+                            IsActive = true,
                             TireStatusId = 1,
                             VehicleId = 3
                         },
                         new
                         {
                             Id = 10,
+                            IsActive = true,
                             TireStatusId = 1,
                             VehicleId = 3
                         },
                         new
                         {
                             Id = 11,
+                            IsActive = true,
                             TireStatusId = 1,
                             VehicleId = 3
                         },
                         new
                         {
                             Id = 12,
+                            IsActive = true,
                             TireStatusId = 1,
                             VehicleId = 3
                         },
                         new
                         {
                             Id = 13,
+                            IsActive = true,
                             TireStatusId = 4,
                             VehicleId = 4
                         },
                         new
                         {
                             Id = 14,
+                            IsActive = true,
                             TireStatusId = 4,
                             VehicleId = 4
                         },
                         new
                         {
                             Id = 15,
+                            IsActive = true,
                             TireStatusId = 4,
                             VehicleId = 4
                         },
                         new
                         {
                             Id = 16,
+                            IsActive = true,
                             TireStatusId = 4,
                             VehicleId = 4
                         },
                         new
                         {
                             Id = 17,
+                            IsActive = true,
                             TireStatusId = 4,
                             VehicleId = 6
                         },
                         new
                         {
                             Id = 18,
+                            IsActive = true,
                             TireStatusId = 4,
                             VehicleId = 6
                         });
@@ -196,6 +217,9 @@ namespace DavisMotorVehicles.Data.Migrations
                     b.Property<int>("FuelLevel")
                         .HasColumnType("INTEGER");
 
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Make")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -225,6 +249,7 @@ namespace DavisMotorVehicles.Data.Migrations
                         {
                             Id = 1,
                             FuelLevel = 40,
+                            IsActive = true,
                             Make = "Dodge",
                             Model = "Avenger",
                             VehicleTypeId = 1,
@@ -235,6 +260,7 @@ namespace DavisMotorVehicles.Data.Migrations
                         {
                             Id = 2,
                             FuelLevel = 50,
+                            IsActive = true,
                             Make = "Honda",
                             Model = "CRV",
                             VehicleTypeId = 1,
@@ -245,6 +271,7 @@ namespace DavisMotorVehicles.Data.Migrations
                         {
                             Id = 3,
                             FuelLevel = 60,
+                            IsActive = true,
                             Make = "Acura",
                             Model = "Integra",
                             VehicleTypeId = 1,
@@ -255,6 +282,7 @@ namespace DavisMotorVehicles.Data.Migrations
                         {
                             Id = 4,
                             FuelLevel = 70,
+                            IsActive = true,
                             Make = "Dodge",
                             Model = "Ram1500",
                             VehicleTypeId = 2,
@@ -265,6 +293,7 @@ namespace DavisMotorVehicles.Data.Migrations
                         {
                             Id = 5,
                             FuelLevel = 80,
+                            IsActive = true,
                             Make = "Tige",
                             Model = "WakeMaster",
                             VehicleTypeId = 4,
@@ -275,6 +304,7 @@ namespace DavisMotorVehicles.Data.Migrations
                         {
                             Id = 6,
                             FuelLevel = 90,
+                            IsActive = true,
                             Make = "Honda",
                             Model = "Shadow",
                             VehicleTypeId = 3,

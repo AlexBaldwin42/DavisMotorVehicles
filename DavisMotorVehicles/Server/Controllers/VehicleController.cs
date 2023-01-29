@@ -19,9 +19,10 @@ namespace DavisMotorVehicles.Server.Controllers
 
 
 			var vehicles = (from i in db.Vehicles
+							where i.IsActive
 							select i)
 					.Include(i => i.VehicleType)
-					.Include(i => i.Tires)
+					.Include(i => i.Tires.Where(t => t.IsActive))
 					.ThenInclude(i => i.TireStatus).ToList();
 			List<VehicleViewModel> vehicleDtos = new List<VehicleViewModel>();
 			foreach (var vehicle in vehicles)
@@ -55,11 +56,30 @@ namespace DavisMotorVehicles.Server.Controllers
 
 			}
 			using var db = new VehicleDatabaseContext();
-			vehicle = AddOrUpdate(vehicle);
+			db.UpdateRange(vehicle);
+			//if (vehicle.Tires != null)
+			//{
+			//	db.UpdateRange(vehicle.Tires);
+			//}
+			//vehicle = AddOrUpdate(vehicle);
+			db.SaveChanges();
 
 			return GetVehicleViewModel(vehicle.Id);
 
 		}
+		[HttpDelete]
+		[Route("/Vehicle/{id}")]
+		public void Delete(int id)
+		{
+			using var db = new VehicleDatabaseContext();
+			var vehicleToDelete = db.Vehicles.Where(i => i.Id == id).Single();
+			vehicleToDelete.IsActive = false;
+			//db.Update(vehicleToDelete);
+			db.SaveChanges();
+
+		}
+
+
 
 
 		public VehicleViewModel GetVehicleViewModel(int vehicleId)
@@ -69,62 +89,76 @@ namespace DavisMotorVehicles.Server.Controllers
 						   where i.Id == vehicleId
 						   select i)
 							.Include(i => i.VehicleType)
-							.Include(i => i.Tires)
+							.Include(i => i.Tires.Where(t => t.IsActive))
 							.ThenInclude(i => i.TireStatus).Single();
 
 			return ConvertToVehicleViewModel(vehicle);
 		}
 		public VehicleViewModel ConvertToVehicleViewModel(Vehicle vehicle)
 		{
-			VehicleViewModel vehicleDto = new VehicleViewModel();
-			vehicleDto.VehicleId = vehicle.Id;
-			vehicleDto.Vin = vehicle.VinNumber;
-			vehicleDto.Make = vehicle.Make;
-			vehicleDto.Model = vehicle.Model;
-			vehicleDto.Year = vehicle.Year;
-			vehicleDto.FuelLevel = vehicle.FuelLevel;
-			vehicleDto.VehicleTypeName = vehicle.VehicleType.Name;
-			vehicleDto.VehicleTypeId = vehicle.VehicleType.Id;
-			vehicleDto.Tires = vehicle.Tires.Select(i => new TireVm()
+			VehicleViewModel vehicleViewModel = new VehicleViewModel();
+			vehicleViewModel.VehicleId = vehicle.Id;
+			vehicleViewModel.Vin = vehicle.VinNumber;
+			vehicleViewModel.Make = vehicle.Make;
+			vehicleViewModel.Model = vehicle.Model;
+			vehicleViewModel.Year = vehicle.Year;
+			vehicleViewModel.FuelLevel = vehicle.FuelLevel;
+			vehicleViewModel.VehicleTypeName = vehicle.VehicleType.Name;
+			vehicleViewModel.VehicleTypeId = vehicle.VehicleType.Id;
+			vehicleViewModel.Tires = vehicle.Tires.Select(i => new TireVm()
 			{
 				TireId = i.Id,
 				TireStatusId = i.TireStatus.Id,
 				TireStatus = i.TireStatus.Status
 			}).ToList();
-			return vehicleDto;
+			return vehicleViewModel;
 		}
 
 		public Vehicle AddOrUpdate(Vehicle vehicle)
 		{
 			using var db = new VehicleDatabaseContext();
-			if (db.Vehicles.Where(i => i.Id == vehicle.Id).Count() > 0)
-			{
-				db.Update(vehicle);
-			}
-			else
-			{
-				vehicle.Id = default(int);
-				db.Add(vehicle);
-				db.SaveChanges();
-			}
-			if (vehicle.Tires != null)
+			using var transation = db.Database.BeginTransaction();
+			try
 			{
 
-				foreach (var tire in vehicle.Tires)
+				transation.CreateSavepoint("BeforeAddingVehicle");
+				if (db.Vehicles.Where(i => i.Id == vehicle.Id).Count() > 0)
 				{
-					if (db.Tires.Where(i => i.Id == tire.Id).Count() > 0)
-					{
-						db.Update(tire);
-					}
-					else
-					{
-						db.Add(tire);
-					}
-
+					db.Update(vehicle);
 				}
+				else
+				{
+					vehicle.Id = default(int);
+					db.Add(vehicle);
+					db.SaveChanges();
+				}
+				if (vehicle.Tires != null)
+				{
+
+					foreach (var tire in vehicle.Tires)
+					{
+						if (db.Tires.Where(i => i.Id == tire.Id).Count() > 0)
+						{
+							db.Update(tire);
+						}
+						else
+						{
+							db.Add(tire);
+						}
+
+					}
+				}
+				db.SaveChanges();
+				transation.Commit();
+				return vehicle;
 			}
-			db.SaveChanges();
-			return vehicle;
+			catch (Exception ex)
+			{
+				transation.RollbackToSavepoint("BeforeAddingVehicle");
+				return new Vehicle();
+
+			}
+
 		}
 
 	}

@@ -3,8 +3,7 @@
 	public class Vehicle
 	{
 		public int Id { get; set; }
-
-		//public int TypeId { get; set; }
+		public bool IsActive { get; set; } = true;
 		public string VinNumber { get; set; }
 		public string Make { get; set; }
 		public string Model { get; set; }
