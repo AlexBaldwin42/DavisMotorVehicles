@@ -63,10 +63,10 @@ else
 			}
 		</tbody>
 	</table>
+	<VehicleEdit @ref="NewVehicleEdit" OnVehicleAdded="@AddNewVehicle"></VehicleEdit>
 }
 
 
-<VehicleEdit @ref="NewVehicleEdit" OnVehicleAdded="@AddNewVehicle"></VehicleEdit>
 
 @code {
 	private VehicleViewModel[]? vehicles;
