@@ -13,6 +13,11 @@ DavisMotorVehicles.Data is the Database sturucture for Entity Framework Core it 
 DavisMotorVehicles.Shared Contains the classes that the server and the client uses to pass data.  
 DavisMotorVehicles.Test has the unit tests for the vehicle controller.  
 
+# Screenshots
+
+![](/Pictures/Layout.png)
+
+![](/Pictures/EditVehicle.png)
 
 
 README.md
