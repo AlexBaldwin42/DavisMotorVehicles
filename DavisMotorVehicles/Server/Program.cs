@@ -5,11 +5,9 @@ using Microsoft.AspNetCore.ResponseCompression;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 builder.Services.AddScoped<IVehicleRepository, VehicleRepository>();
-builder.Services.AddScoped<ITireRepository, TireRepository>();
 
 builder.Services.AddDbContext<DavisMotorVehicles.Data.VehicleDatabaseContext>();
 

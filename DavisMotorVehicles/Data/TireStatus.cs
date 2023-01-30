@@ -10,7 +10,6 @@ namespace DavisMotorVehicles.Data
 	{
 		public int Id { get; set; }
 		public string Status { get; set; }
-		//public List<Tire> Tires { get; set; } = new List<Tire>(); //
 		
 	}
 }

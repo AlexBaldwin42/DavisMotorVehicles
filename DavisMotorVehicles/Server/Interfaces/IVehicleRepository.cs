@@ -9,7 +9,6 @@ namespace DavisMotorVehicles.Server.Interfaces
 		public bool VehicleExists(int vehicleId);
 		public Vehicle GetVehicle(int vehicleId);
 		public bool DeleteVehicle(Vehicle vehicle);
-		//public bool DeleteTires(List<Tire> tiresToDelete);
 		public ICollection<VehicleType> GetVehicleTypes();
 		bool Save();
 	}

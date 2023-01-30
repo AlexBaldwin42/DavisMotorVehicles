@@ -13,66 +13,24 @@
 
 		public VehicleDatabaseContext()
 		{
-			//var folder = Environment.SpecialFolder.LocalApplicationData;
 			var path = Directory.GetCurrentDirectory();
-			//var path = Environment.GetFolderPath(folder);
 			path = Path.GetFullPath(Path.Combine(path, @"..\Data\"));
 			DbPath = Path.Join(path, "Vehicles.db");
 		}
 
 		// The following configures EF to create a Sqlite database file in the
-		// special "local" folder for your platform.
 		protected override void OnConfiguring(DbContextOptionsBuilder options)
 			=> options.UseSqlite($"Data Source={DbPath}");
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
-			//modelBuilder.Entity<Vehicle>()
-			//	.HasKey(e => e.Id);
-			//modelBuilder.Entity<Vehicle>()
-			//	.HasIndex(i => i.VinNumber)
-			//	.IsUnique();
-			//modelBuilder.Entity<Vehicle>()
-			//	.HasOne(i => i.VehicleType)
-			//	.WithMany(i => i.Vehicles)
-			//	.HasForeignKey(i => i.VehicleTypeId);
-
-			//modelBuilder.Entity<Vehicle>()
-			//	.HasMany(i => i.Tires)
-			//	.WithOne(i => i.Vehicle)
-			//	.HasPrincipalKey(i => i.Id);
-
-			//modelBuilder.Entity<VehicleType>()
-			//	.HasKey(e => e.Id);
-			////modelBuilder.Entity<VehicleType>()
-			////	.HasMany(i => i.Vehicles)
-			////	.WithOne(i => i.VehicleType)
-			////	.HasPrincipalKey(i => i.Id);
-
-			//modelBuilder.Entity<Tire>()
-			//	.HasKey(i => i.Id);
-			//modelBuilder.Entity<Tire>()
-			//	.HasOne(i => i.Vehicle)
-			//	.WithMany(i => i.Tires)
-			//	.HasForeignKey(i => i.VehicleId);
-			//modelBuilder.Entity<Tire>()
-			//	 .HasOne(i => i.TireStatus)
-			//	 .WithMany(i => i.Tires)
-			//	 .HasForeignKey(i => i.TireStatusId);
-
-			//modelBuilder.Entity<TireStatus>()
-			//	.HasKey(i => i.Id);
-			////modelBuilder.Entity<TireStatus>()
-			////	.HasMany(e => e.Tires)
-			////	.WithOne(e => e.TireStatus)
-			////	.HasPrincipalKey(e => e.Id);
-
 			modelBuilder.Entity<TireStatus>()
-				   .HasData(
-					   new TireStatus() { Id = 1, Status = "Bad" },
-					   new TireStatus() { Id = 2, Status = "Fair" },
-					   new TireStatus() { Id = 3, Status = "Good" }
+			   .HasData(
+				   new TireStatus() { Id = 1, Status = "Bad" },
+				   new TireStatus() { Id = 2, Status = "Fair" },
+				   new TireStatus() { Id = 3, Status = "Good" }
 				);
+
 			modelBuilder.Entity<VehicleType>()
 				.HasData(
 					new VehicleType() { Id = 1, Name = "Car", NumberOfTires = 4 },
@@ -91,30 +49,27 @@
 					new Vehicle() { Id = 6, VehicleTypeId = 3, Make = "Honda", Model = "Shadow", Year = 2022, VinNumber = "KDEID3366DKDKDKIF", FuelLevel = 90 }//motorcycle
 				);
 
-
 			modelBuilder.Entity<Tire>()
 				.HasData(
-				new Tire() { Id = 1, VehicleId = 1, TireStatusId = 1 },
-				new Tire() { Id = 2, VehicleId = 1, TireStatusId = 1 },
-				new Tire() { Id = 3, VehicleId = 1, TireStatusId = 1 },
-				new Tire() { Id = 4, VehicleId = 1, TireStatusId = 1 },
-				new Tire() { Id = 5, VehicleId = 2, TireStatusId = 3 },
-				new Tire() { Id = 6, VehicleId = 2, TireStatusId = 3 },
-				new Tire() { Id = 7, VehicleId = 2, TireStatusId = 3 },
-				new Tire() { Id = 8, VehicleId = 2, TireStatusId = 3 },
-				new Tire() { Id = 9, VehicleId = 3, TireStatusId = 1 },
-				new Tire() { Id = 10, VehicleId = 3, TireStatusId = 1 },
-				new Tire() { Id = 11, VehicleId = 3, TireStatusId = 1 },
-				new Tire() { Id = 12, VehicleId = 3, TireStatusId = 1 },
-				new Tire() { Id = 13, VehicleId = 4, TireStatusId = 2 },
-				new Tire() { Id = 14, VehicleId = 4, TireStatusId = 2 },
-				new Tire() { Id = 15, VehicleId = 4, TireStatusId = 2 },
-				new Tire() { Id = 16, VehicleId = 4, TireStatusId = 2 },
-				new Tire() { Id = 17, VehicleId = 6, TireStatusId = 2 },
-				new Tire() { Id = 18, VehicleId = 6, TireStatusId = 2 }
+					new Tire() { Id = 1, VehicleId = 1, TireStatusId = 1 },
+					new Tire() { Id = 2, VehicleId = 1, TireStatusId = 1 },
+					new Tire() { Id = 3, VehicleId = 1, TireStatusId = 1 },
+					new Tire() { Id = 4, VehicleId = 1, TireStatusId = 1 },
+					new Tire() { Id = 5, VehicleId = 2, TireStatusId = 3 },
+					new Tire() { Id = 6, VehicleId = 2, TireStatusId = 3 },
+					new Tire() { Id = 7, VehicleId = 2, TireStatusId = 3 },
+					new Tire() { Id = 8, VehicleId = 2, TireStatusId = 3 },
+					new Tire() { Id = 9, VehicleId = 3, TireStatusId = 1 },
+					new Tire() { Id = 10, VehicleId = 3, TireStatusId = 1 },
+					new Tire() { Id = 11, VehicleId = 3, TireStatusId = 1 },
+					new Tire() { Id = 12, VehicleId = 3, TireStatusId = 1 },
+					new Tire() { Id = 13, VehicleId = 4, TireStatusId = 2 },
+					new Tire() { Id = 14, VehicleId = 4, TireStatusId = 2 },
+					new Tire() { Id = 15, VehicleId = 4, TireStatusId = 2 },
+					new Tire() { Id = 16, VehicleId = 4, TireStatusId = 2 },
+					new Tire() { Id = 17, VehicleId = 6, TireStatusId = 2 },
+					new Tire() { Id = 18, VehicleId = 6, TireStatusId = 2 }
 				);
-
-
 		}
 	}
 }

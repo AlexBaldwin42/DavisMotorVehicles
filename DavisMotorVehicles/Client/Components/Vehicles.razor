@@ -11,8 +11,6 @@
 	<div class="spinner-border text-primary" role="status">
 		<span class="visually-hidden">Loading...</span>
 	</div>
-
-	<p>Loading</p>
 }
 else
 {
@@ -24,7 +22,6 @@ else
 				<th>Model</th>
 				<th>Year</th>
 				<th>Vin</th>
-				@*<th>Fuel Level</th>*@
 				<th>Type</th>
 				<th>Fuel</th>
 				<th>Tires</th>
@@ -40,36 +37,29 @@ else
 					<td>@vehicles[localVehicleIndex].Model</td>
 					<td>@vehicles[localVehicleIndex].Year</td>
 					<td>@vehicles[localVehicleIndex].Vin</td>
-					@*					<td>@vehicles[localVehicleIndex].FuelLevel</td>*@
 					<td>@vehicles[localVehicleIndex].VehicleTypeName</td>
 					<td>
 						<div style="width:300px; margin-bottom:20px" class="">
 							<div class="progress">
-								<div class="progress-bar" role="progressbar" aria-label="Example with label" style="width: @vehicles[localVehicleIndex].FuelLevel%;" aria-valuenow="@vehicles[localVehicleIndex].FuelLevel" aria-valuemin="0" aria-valuemax="100">@vehicles[localVehicleIndex].FuelLevel%</div>
+								<div class="progress-bar" role="progressbar" style="width: @vehicles[localVehicleIndex].FuelLevel%;" aria-valuenow="@vehicles[localVehicleIndex].FuelLevel" aria-valuemin="0" aria-valuemax="100">@vehicles[localVehicleIndex].FuelLevel%</div>
 							</div>
-							@*	<FluentSlider Orientation="Orientation.Horizontal" Min="0" Max="100" Step="10" @bind-Value="vehicles[i].FuelLevel">
-					<FluentSliderLabel Position="0">Empty</FluentSliderLabel>
-					<FluentSliderLabel Position="50">50%</FluentSliderLabel>
-					<FluentSliderLabel Position="100">Full</FluentSliderLabel>
-					</FluentSlider>*@
 						</div>
 					</td>
-
 					<td>
-						@for (int j = 0; j < vehicles[localVehicleIndex]!.Tires.Count; j++)
+						@if (vehicles[localVehicleIndex].Tires != null)
 						{
-							var tireIndex = j;
-							<BSImage Source="@(vehicles[localVehicleIndex].Tires[j].TireStatus + ".svg")" style="height:40px; width:30px"> </BSImage>
-
+							@for (int j = 0; j < vehicles[localVehicleIndex].Tires!.Count; j++)
+							{
+								var tireIndex = j;
+								<BSImage Source="@(vehicles![localVehicleIndex].Tires![j].TireStatus + ".svg")" style="height:40px; width:30px"> </BSImage>
+							}
 						}
-
 					</td>
 					<td>
 						<VehicleEdit @bind-Vehicle="vehicles[localVehicleIndex]"></VehicleEdit>
 						<BSButton Color="BlazorStrap.BSColor.Danger" @onclick="@(()=> DeleteVehicle(vehicles[localVehicleIndex]))">Delete</BSButton>
 					</td>
 				</tr>
-
 			}
 		</tbody>
 	</table>
@@ -85,12 +75,10 @@ else
 	protected override async Task OnInitializedAsync()
 	{
 		await base.OnInitializedAsync();
-		Console.WriteLine("Initialized");
 		vehicles = await Http.GetFromJsonAsync<VehicleViewModel[]>("Vehicle");
 	}
 	private void AddNewVehicle(VehicleViewModel newVehicle)
 	{
-		Console.WriteLine("Adding new vehicle");
 		if (vehicles != null && vehicles.Count() != 0)
 		{
 			// There are existing vehicles
@@ -111,8 +99,7 @@ else
 		var newVehiclesList = vehicles.ToList();
 		newVehiclesList.Remove(vehicleToDelete);
 		vehicles = newVehiclesList.ToArray();
-		//var response = await Http.DeleteAsync("Vehicle", vehicleToDelete.VehicleId);
-		var response = await Http.DeleteAsync($"Vehicle/{vehicleToDelete.VehicleId}");
+		var response = await Http.DeleteAsync($"Vehicle/{vehicleToDelete.VehicleId}/");
 	}
 
 }
