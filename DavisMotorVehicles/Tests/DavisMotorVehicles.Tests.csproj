@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
@@ -25,8 +25,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DavisMotorVehicles\Server\DavisMotorVehicles.Server.csproj" />
-    <ProjectReference Include="..\DavisMotorVehicles\Shared\DavisMotorVehicles.Shared.csproj" />
+    <ProjectReference Include="..\Server\DavisMotorVehicles.Server.csproj" />
+    <ProjectReference Include="..\Shared\DavisMotorVehicles.Shared.csproj" />
   </ItemGroup>
 
 </Project>
