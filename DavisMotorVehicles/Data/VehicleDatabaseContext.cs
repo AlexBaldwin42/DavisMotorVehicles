@@ -70,16 +70,15 @@
 			modelBuilder.Entity<TireStatus>()
 				   .HasData(
 					   new TireStatus() { Id = 1, Status = "Bad" },
-					   new TireStatus() { Id = 2, Status = "Ok" },
-					   new TireStatus() { Id = 3, Status = "Good" },
-					   new TireStatus() { Id = 4, Status = "Great" }
+					   new TireStatus() { Id = 2, Status = "Fair" },
+					   new TireStatus() { Id = 3, Status = "Good" }
 				);
 			modelBuilder.Entity<VehicleType>()
 				.HasData(
-					new VehicleType() { Id = 1, Name = "Car" },
-					new VehicleType() { Id = 2, Name = "Truck" },
-					new VehicleType() { Id = 3, Name = "Motorcycle" },
-					new VehicleType() { Id = 4, Name = "Boat" }
+					new VehicleType() { Id = 1, Name = "Car", NumberOfTires = 4 },
+					new VehicleType() { Id = 2, Name = "Truck", NumberOfTires = 4},
+					new VehicleType() { Id = 3, Name = "Motorcycle", NumberOfTires = 2 },
+					new VehicleType() { Id = 4, Name = "Boat", NumberOfTires = 0 }
 				);
 
 			modelBuilder.Entity<Vehicle>()
@@ -95,24 +94,24 @@
 
 			modelBuilder.Entity<Tire>()
 				.HasData(
-				new Tire() { Id = 1, VehicleId = 1, TireStatusId = 3 },
-				new Tire() { Id = 2, VehicleId = 1, TireStatusId = 3 },
-				new Tire() { Id = 3, VehicleId = 1, TireStatusId = 3 },
-				new Tire() { Id = 4, VehicleId = 1, TireStatusId = 3 },
-				new Tire() { Id = 5, VehicleId = 2, TireStatusId = 4 },
-				new Tire() { Id = 6, VehicleId = 2, TireStatusId = 4 },
-				new Tire() { Id = 7, VehicleId = 2, TireStatusId = 4 },
-				new Tire() { Id = 8, VehicleId = 2, TireStatusId = 4 },
+				new Tire() { Id = 1, VehicleId = 1, TireStatusId = 1 },
+				new Tire() { Id = 2, VehicleId = 1, TireStatusId = 1 },
+				new Tire() { Id = 3, VehicleId = 1, TireStatusId = 1 },
+				new Tire() { Id = 4, VehicleId = 1, TireStatusId = 1 },
+				new Tire() { Id = 5, VehicleId = 2, TireStatusId = 3 },
+				new Tire() { Id = 6, VehicleId = 2, TireStatusId = 3 },
+				new Tire() { Id = 7, VehicleId = 2, TireStatusId = 3 },
+				new Tire() { Id = 8, VehicleId = 2, TireStatusId = 3 },
 				new Tire() { Id = 9, VehicleId = 3, TireStatusId = 1 },
 				new Tire() { Id = 10, VehicleId = 3, TireStatusId = 1 },
 				new Tire() { Id = 11, VehicleId = 3, TireStatusId = 1 },
 				new Tire() { Id = 12, VehicleId = 3, TireStatusId = 1 },
-				new Tire() { Id = 13, VehicleId = 4, TireStatusId = 4 },
-				new Tire() { Id = 14, VehicleId = 4, TireStatusId = 4 },
-				new Tire() { Id = 15, VehicleId = 4, TireStatusId = 4 },
-				new Tire() { Id = 16, VehicleId = 4, TireStatusId = 4 },
-				new Tire() { Id = 17, VehicleId = 6, TireStatusId = 4 },
-				new Tire() { Id = 18, VehicleId = 6, TireStatusId = 4 }
+				new Tire() { Id = 13, VehicleId = 4, TireStatusId = 2 },
+				new Tire() { Id = 14, VehicleId = 4, TireStatusId = 2 },
+				new Tire() { Id = 15, VehicleId = 4, TireStatusId = 2 },
+				new Tire() { Id = 16, VehicleId = 4, TireStatusId = 2 },
+				new Tire() { Id = 17, VehicleId = 6, TireStatusId = 2 },
+				new Tire() { Id = 18, VehicleId = 6, TireStatusId = 2 }
 				);
 
 

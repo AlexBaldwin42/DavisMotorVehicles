@@ -3,6 +3,8 @@ using DavisMotorVehicles.Data;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using DavisMotorVehicles.Shared.ViewModels;
+using DavisMotorVehicles.Server.Interfaces;
+using DavisMotorVehicles.Server.Repository;
 
 namespace DavisMotorVehicles.Server.Controllers
 {
@@ -10,88 +12,135 @@ namespace DavisMotorVehicles.Server.Controllers
 	[Route("[controller]")]
 	public class VehicleController : ControllerBase
 	{
-
-		[HttpGet]
-		public IEnumerable<VehicleViewModel> Get()
+		private IVehicleRepository _vehicleRepository;
+		//private ITireRepository _tireRepository;
+		public VehicleController(IVehicleRepository vehicleRepository)//, ITireRepository tireRepository)
 		{
-			using var db = new VehicleDatabaseContext();
-
-
-
-			var vehicles = (from i in db.Vehicles
-							where i.IsActive
-							select i)
-					.Include(i => i.VehicleType)
-					.Include(i => i.Tires.Where(t => t.IsActive))
-					.ThenInclude(i => i.TireStatus).ToList();
+			_vehicleRepository = vehicleRepository;
+			//_tireRepository = tireRepository;
+		}
+		[HttpGet]
+		//public IEnumerable<VehicleViewModel> Get()
+		[ProducesResponseType(200, Type = typeof(IEnumerable<Vehicle>))]
+		public IActionResult GetVehicles()
+		{
+			var vehicles = _vehicleRepository.GetVehicles();
 			List<VehicleViewModel> vehicleDtos = new List<VehicleViewModel>();
 			foreach (var vehicle in vehicles)
 			{
 				vehicleDtos.Add(ConvertToVehicleViewModel(vehicle));
 			}
-			return vehicleDtos;
+			return Ok(vehicleDtos);
 		}
 
 		[HttpPost]
 		public VehicleViewModel Post(VehicleViewModel vehicleViewModel)
 		{
-			Vehicle vehicle = new()
+
+			bool isNewVehicle = vehicleViewModel.VehicleId == default(int);
+			Vehicle updatingVehicle;
+			if (isNewVehicle)
 			{
-				Id = vehicleViewModel.VehicleId,
-				FuelLevel = vehicleViewModel.FuelLevel,
-				Make = vehicleViewModel.Make,
-				Model = vehicleViewModel.Model,
-				Year = vehicleViewModel.Year,
-				VehicleTypeId = vehicleViewModel.VehicleTypeId,
-				VinNumber = vehicleViewModel.Vin
-			};
+				updatingVehicle = new();
+				updatingVehicle.Tires = new();
+			}
+			else
+			{
+				updatingVehicle = _vehicleRepository.GetVehicle(vehicleViewModel.VehicleId);
+			}
+
+			updatingVehicle.FuelLevel = vehicleViewModel.FuelLevel;
+			updatingVehicle.Make = vehicleViewModel.Make;
+			updatingVehicle.Model = vehicleViewModel.Model;
+			updatingVehicle.Year = vehicleViewModel.Year;
+			updatingVehicle.VehicleTypeId = vehicleViewModel.VehicleTypeId;
+			updatingVehicle.VinNumber = vehicleViewModel.Vin;
+			//updatingVehicle.VehicleType = null;
+
+
+			//if(vehicleViewModel.Tir!es Count)
+			// Assume all tires not being updated have been deleted.
+			updatingVehicle.Tires.ForEach(i => i.IsActive = false);
 
 			if (vehicleViewModel.Tires != null)
 			{
-				vehicle.Tires = new();
-				foreach (var tire in vehicleViewModel.Tires!)
+				List<Tire> tiresToAdd = new();
+				foreach (var tire in vehicleViewModel.Tires)
 				{
-					vehicle.Tires.Add(new Tire() { Id = tire.TireId, TireStatusId = tire.TireStatusId, VehicleId = vehicle.Id });
+					var tireToUpdate = updatingVehicle.Tires.Where(i => i.Id == tire.TireId).SingleOrDefault();
+					if (tireToUpdate != null)
+					{
+						// Existing tire update
+						tireToUpdate.TireStatusId = tire.TireStatusId;
+						tireToUpdate.IsActive = true;
+					}
+					else
+					{
+						// New tire to add
+						tiresToAdd.Add(new Tire() { TireStatusId = tire.TireStatusId, VehicleId = updatingVehicle.Id });
+						//updatingVehicle.Tires.Add(new Tire() { TireStatusId = tire.TireStatusId, VehicleId = updatingVehicle.Id });
+					}
+
 				}
-
+				updatingVehicle.Tires.AddRange(tiresToAdd);
 			}
-			using var db = new VehicleDatabaseContext();
-			db.UpdateRange(vehicle);
-			//if (vehicle.Tires != null)
-			//{
-			//	db.UpdateRange(vehicle.Tires);
-			//}
-			//vehicle = AddOrUpdate(vehicle);
-			db.SaveChanges();
+			_vehicleRepository.UpdateVehicle(updatingVehicle);
+			//_dbContext.UpdateRange(vehicle);
+			////if (vehicle.Tires != null)
+			////{
+			////	db.UpdateRange(vehicle.Tires);
+			////}
+			////vehicle = AddOrUpdate(vehicle);
+			//_dbContext.SaveChanges();
 
-			return GetVehicleViewModel(vehicle.Id);
+			//var returnable = GetVehicleViewModel(updatingVehicle.Id);
+			return GetVehicleViewModel(updatingVehicle.Id);
+			//return returnable;
+			//return ConvertToVehicleViewModel(updatingVehicle);
 
 		}
-		[HttpDelete]
-		[Route("/Vehicle/{id}")]
-		public void Delete(int id)
+		[HttpDelete("{id}")]
+		public IActionResult Delete(int id)
 		{
-			using var db = new VehicleDatabaseContext();
-			var vehicleToDelete = db.Vehicles.Where(i => i.Id == id).Single();
-			vehicleToDelete.IsActive = false;
-			//db.Update(vehicleToDelete);
-			db.SaveChanges();
+			if (!_vehicleRepository.VehicleExists(id))
+			{
+				return NotFound();
+			}
+
+			var vehicleToDelete = _vehicleRepository.GetVehicle(id);
+
+			_vehicleRepository.DeleteVehicle(vehicleToDelete);
+			return NoContent();
 
 		}
+		[HttpGet]
+		[Route("/VehicleTypes")]
+		public IActionResult GetNumberOfTires()
+		{
+			var vehicleTypes = _vehicleRepository.GetVehicleTypes();
+			List<VehicleTypeViewModel> vehicleTypeViewModels = new();
 
+
+			foreach (var vehicleType in vehicleTypes)
+			{
+				vehicleTypeViewModels.Add(new VehicleTypeViewModel()
+				{
+					NumberOfTires = vehicleType.NumberOfTires,
+					VehicleTypeId = vehicleType.Id,
+					VehicleTypeName = vehicleType.Name
+				});
+			}
+
+			return Ok(vehicleTypeViewModels);
+
+		}
 
 
 
 		public VehicleViewModel GetVehicleViewModel(int vehicleId)
 		{
-			using var db = new VehicleDatabaseContext();
-			var vehicle = (from i in db.Vehicles
-						   where i.Id == vehicleId
-						   select i)
-							.Include(i => i.VehicleType)
-							.Include(i => i.Tires.Where(t => t.IsActive))
-							.ThenInclude(i => i.TireStatus).Single();
-
+			var vehicle = _vehicleRepository.GetVehicle(vehicleId);
+			vehicle.Tires.RemoveAll(i => !i.IsActive);
 			return ConvertToVehicleViewModel(vehicle);
 		}
 		public VehicleViewModel ConvertToVehicleViewModel(Vehicle vehicle)
@@ -114,52 +163,51 @@ namespace DavisMotorVehicles.Server.Controllers
 			return vehicleViewModel;
 		}
 
-		public Vehicle AddOrUpdate(Vehicle vehicle)
-		{
-			using var db = new VehicleDatabaseContext();
-			using var transation = db.Database.BeginTransaction();
-			try
-			{
+		//public Vehicle AddOrUpdate(Vehicle vehicle)
+		//{
+		//	using var transation = _dbContext.Database.BeginTransaction();
+		//	try
+		//	{
 
-				transation.CreateSavepoint("BeforeAddingVehicle");
-				if (db.Vehicles.Where(i => i.Id == vehicle.Id).Count() > 0)
-				{
-					db.Update(vehicle);
-				}
-				else
-				{
-					vehicle.Id = default(int);
-					db.Add(vehicle);
-					db.SaveChanges();
-				}
-				if (vehicle.Tires != null)
-				{
+		//		transation.CreateSavepoint("BeforeAddingVehicle");
+		//		if (_dbContext.Vehicles.Where(i => i.Id == vehicle.Id).Count() > 0)
+		//		{
+		//			_dbContext.Update(vehicle);
+		//		}
+		//		else
+		//		{
+		//			vehicle.Id = default(int);
+		//			_dbContext.Add(vehicle);
+		//			_dbContext.SaveChanges();
+		//		}
+		//		if (vehicle.Tires != null)
+		//		{
 
-					foreach (var tire in vehicle.Tires)
-					{
-						if (db.Tires.Where(i => i.Id == tire.Id).Count() > 0)
-						{
-							db.Update(tire);
-						}
-						else
-						{
-							db.Add(tire);
-						}
+		//			foreach (var tire in vehicle.Tires)
+		//			{
+		//				if (_dbContext.Tires.Where(i => i.Id == tire.Id).Count() > 0)
+		//				{
+		//					_dbContext.Update(tire);
+		//				}
+		//				else
+		//				{
+		//					_dbContext.Add(tire);
+		//				}
 
-					}
-				}
-				db.SaveChanges();
-				transation.Commit();
-				return vehicle;
-			}
-			catch (Exception ex)
-			{
-				transation.RollbackToSavepoint("BeforeAddingVehicle");
-				return new Vehicle();
+		//			}
+		//		}
+		//		_dbContext.SaveChanges();
+		//		transation.Commit();
+		//		return vehicle;
+		//	}
+		//	catch (Exception ex)
+		//	{
+		//		transation.RollbackToSavepoint("BeforeAddingVehicle");
+		//		return new Vehicle();
 
-			}
+		//	}
 
-		}
+		//}
 
 	}
 }

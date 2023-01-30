@@ -37,7 +37,8 @@
 		</div>
 
 		<div class="form-floating">
-			<BSInput InputType="InputType.Select" @bind-Value="Vehicle.VehicleTypeId">
+			@*<BSInput InputType="InputType.Select" @bind-Value="Vehicle.VehicleTypeId" Value="@Vehicle.VehicleTypeId" @onchange="TypeChange">*@
+			<BSInput InputType="InputType.Select" @bind-Value="Vehicle.VehicleTypeId" @onchange="TypeChange">
 				<option value="1">Car</option>
 				<option value="2">Truck</option>
 				<option value="3">Motorcycle</option>
@@ -61,15 +62,14 @@
 						<option value="1">Bad</option>
 						<option value="2">Ok</option>
 						<option value="3">Good</option>
-						<option value="4">Great</option>
 					</BSInput>
 					<label for="floatingSelect">Tire status</label>
-					<BSButton @onclick="@(()=> DeleteTire(Vehicle.Tires[tireIndex]))" Color="BSColor.Warning">Delete</BSButton>
+					@*<BSButton @onclick="@(()=> DeleteTire(Vehicle.Tires[tireIndex]))" Color="BSColor.Warning">Delete</BSButton>*@
 				</div>
 			}
 		}
 
-		<BSButton OnClick="AddTire" Color="BlazorStrap.BSColor.Primary">Add Tire</BSButton>
+		@*<BSButton OnClick="AddTire" Color="BlazorStrap.BSColor.Primary">Add Tire</BSButton>*@
 
 	</Content>
 	<Footer Context="modal">
@@ -119,6 +119,10 @@
 	private string HeaderText { get; set; }
 	private string ButtonText { get; set; }
 	private string ModalId { get { return "VehicleModal" + Vehicle.VehicleId; } }
+	private VehicleTypeViewModel[]? VehicleTypes { get; set; }
+
+	//private bool IsNewVehicle { get { return Vehicle.VehicleId == default(int); } }
+	private bool IsNewVehicle { get; set; }
 
 
 	public VehicleEdit()
@@ -126,46 +130,67 @@
 		HeaderText = "Add New Vehicle";
 		ButtonText = "Add New Vehicle";
 	}
-	protected override void OnInitialized()
+	protected override async void OnInitialized()
 	{
 		base.OnInitialized();
 		if (Vehicle == null)
 		{
 			Vehicle = new();
 			Vehicle.VehicleId = default(int);
+			IsNewVehicle = true;
+
 		}
 		else
 		{
 			HeaderText = "Edit vehicle";
 			ButtonText = "Edit";
 		}
+		VehicleTypes = await Http.GetFromJsonAsync<VehicleTypeViewModel[]>("VehicleTypes/");
 		Console.WriteLine("Vehicle Edit Initialized");
 	}
-	public void AddTire()
+	public void RemoveTires(int quantityToRemove)
 	{
-		if(Vehicle.Tires == null)
+		Console.WriteLine($"Removing {quantityToRemove}");
+		if (Vehicle!.Tires == null)
 		{
-			Vehicle.Tires = new();		
+			return;
 		}
-		Vehicle.Tires.Add(new TireVm());
+
+		for (int i = 0; i < quantityToRemove; i++)
+		{
+			Vehicle.Tires.Remove(Vehicle.Tires.Last());
+		}
 	}
-	public async void DeleteTire(TireVm tire)
+	public void AddTires(int quantityToAdd)
 	{
-		Vehicle.Tires.Remove(tire);
-		var response = await Http.DeleteAsync($"tire/{tire.TireId}");
+		Console.WriteLine($"Adding {quantityToAdd}");
+		if (Vehicle.Tires == null)
+		{
+			Vehicle.Tires = new();
+		}
+		for (int i = 0; i < quantityToAdd; i++)
+		{
+			Vehicle.Tires.Add(new TireVm() { TireStatus = "Good", TireStatusId = 3 });
+		}
 	}
+	//public async void DeleteTire(TireVm tire)
+	//{
+	//	Vehicle.Tires.Remove(tire);
+	//	var response = await Http.DeleteAsync($"tire/{tire.TireId}");
+	//}
 	public async Task Save()
 	{
-		Console.WriteLine("Saving");
-		bool isNewVehicle = Vehicle.VehicleId == default(int);
+
+		Console.WriteLine($"Saving  typename {Vehicle.VehicleTypeName} typeId  {Vehicle.VehicleTypeId}");
 		var response = await Http.PostAsJsonAsync<VehicleViewModel>("vehicle", Vehicle);
 		if (response.IsSuccessStatusCode)
 		{
 			Vehicle = await response.Content.ReadFromJsonAsync<VehicleViewModel>();
-			if (isNewVehicle)
+			if (IsNewVehicle)
 			{
 				await OnVehicleAdded.InvokeAsync(Vehicle);
 				Vehicle = new VehicleViewModel();
+				IsNewVehicle = false;
 			}
 			else
 			{
@@ -173,6 +198,39 @@
 			}
 
 			await Modal!.HideAsync();
+		}
+
+	}
+	public async void TypeChange(ChangeEventArgs e)
+	{
+		Console.WriteLine($"typechange {Vehicle.VehicleTypeId}");
+		//if (Vehicle!.VehicleTypeId != default(int) && VehicleTypes != null)
+		if (VehicleTypes != null)
+		{
+
+			var vehicleType = VehicleTypes!.Where(i => i.VehicleTypeId == int.Parse(e.Value.ToString())).SingleOrDefault();
+
+			int currentQuantityOfTires = Vehicle.Tires == null ? 0 : Vehicle.Tires.Count();
+			int newQuantityOfTires = vehicleType.NumberOfTires;
+
+			Vehicle.VehicleTypeId = vehicleType.VehicleTypeId;
+			Vehicle.VehicleTypeName = vehicleType.VehicleTypeName;
+
+
+			if (currentQuantityOfTires < newQuantityOfTires)
+			{
+				AddTires(Math.Abs(newQuantityOfTires - currentQuantityOfTires));
+			}
+			else
+			{
+				RemoveTires(currentQuantityOfTires - newQuantityOfTires);
+			}
+
+		}
+
+		if (!IsNewVehicle)
+		{
+			await VehicleChanged.InvokeAsync(Vehicle);
 		}
 
 	}

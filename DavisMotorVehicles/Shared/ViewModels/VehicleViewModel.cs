@@ -18,7 +18,6 @@ namespace DavisMotorVehicles.Shared.ViewModels
 		public List<TireVm>? Tires { get; set; }
 		public int VehicleTypeId { get; set; }
 		public string? VehicleTypeName { get; set; }
-
 	}
 	public class TireVm
 	{

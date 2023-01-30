@@ -1,3 +1,5 @@
+using DavisMotorVehicles.Server.Interfaces;
+using DavisMotorVehicles.Server.Repository;
 using Microsoft.AspNetCore.ResponseCompression;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -6,6 +8,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
+builder.Services.AddScoped<IVehicleRepository, VehicleRepository>();
+builder.Services.AddScoped<ITireRepository, TireRepository>();
+
+builder.Services.AddDbContext<DavisMotorVehicles.Data.VehicleDatabaseContext>();
 
 var app = builder.Build();
 

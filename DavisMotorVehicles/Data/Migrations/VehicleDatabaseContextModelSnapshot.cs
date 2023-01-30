@@ -44,56 +44,56 @@ namespace DavisMotorVehicles.Data.Migrations
                         {
                             Id = 1,
                             IsActive = true,
-                            TireStatusId = 3,
+                            TireStatusId = 1,
                             VehicleId = 1
                         },
                         new
                         {
                             Id = 2,
                             IsActive = true,
-                            TireStatusId = 3,
+                            TireStatusId = 1,
                             VehicleId = 1
                         },
                         new
                         {
                             Id = 3,
                             IsActive = true,
-                            TireStatusId = 3,
+                            TireStatusId = 1,
                             VehicleId = 1
                         },
                         new
                         {
                             Id = 4,
                             IsActive = true,
-                            TireStatusId = 3,
+                            TireStatusId = 1,
                             VehicleId = 1
                         },
                         new
                         {
                             Id = 5,
                             IsActive = true,
-                            TireStatusId = 4,
+                            TireStatusId = 3,
                             VehicleId = 2
                         },
                         new
                         {
                             Id = 6,
                             IsActive = true,
-                            TireStatusId = 4,
+                            TireStatusId = 3,
                             VehicleId = 2
                         },
                         new
                         {
                             Id = 7,
                             IsActive = true,
-                            TireStatusId = 4,
+                            TireStatusId = 3,
                             VehicleId = 2
                         },
                         new
                         {
                             Id = 8,
                             IsActive = true,
-                            TireStatusId = 4,
+                            TireStatusId = 3,
                             VehicleId = 2
                         },
                         new
@@ -128,42 +128,42 @@ namespace DavisMotorVehicles.Data.Migrations
                         {
                             Id = 13,
                             IsActive = true,
-                            TireStatusId = 4,
+                            TireStatusId = 2,
                             VehicleId = 4
                         },
                         new
                         {
                             Id = 14,
                             IsActive = true,
-                            TireStatusId = 4,
+                            TireStatusId = 2,
                             VehicleId = 4
                         },
                         new
                         {
                             Id = 15,
                             IsActive = true,
-                            TireStatusId = 4,
+                            TireStatusId = 2,
                             VehicleId = 4
                         },
                         new
                         {
                             Id = 16,
                             IsActive = true,
-                            TireStatusId = 4,
+                            TireStatusId = 2,
                             VehicleId = 4
                         },
                         new
                         {
                             Id = 17,
                             IsActive = true,
-                            TireStatusId = 4,
+                            TireStatusId = 2,
                             VehicleId = 6
                         },
                         new
                         {
                             Id = 18,
                             IsActive = true,
-                            TireStatusId = 4,
+                            TireStatusId = 2,
                             VehicleId = 6
                         });
                 });
@@ -191,17 +191,12 @@ namespace DavisMotorVehicles.Data.Migrations
                         new
                         {
                             Id = 2,
-                            Status = "Ok"
+                            Status = "Fair"
                         },
                         new
                         {
                             Id = 3,
                             Status = "Good"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Status = "Great"
                         });
                 });
 
@@ -320,6 +315,9 @@ namespace DavisMotorVehicles.Data.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("NumberOfTires")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("Id");
 
                     b.ToTable("VehicleTypes");
@@ -328,22 +326,26 @@ namespace DavisMotorVehicles.Data.Migrations
                         new
                         {
                             Id = 1,
-                            Name = "Car"
+                            Name = "Car",
+                            NumberOfTires = 4
                         },
                         new
                         {
                             Id = 2,
-                            Name = "Truck"
+                            Name = "Truck",
+                            NumberOfTires = 4
                         },
                         new
                         {
                             Id = 3,
-                            Name = "Motorcycle"
+                            Name = "Motorcycle",
+                            NumberOfTires = 2
                         },
                         new
                         {
                             Id = 4,
-                            Name = "Boat"
+                            Name = "Boat",
+                            NumberOfTires = 0
                         });
                 });
 
